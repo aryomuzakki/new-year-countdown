@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<meta name="description" content="New Year Count Down" />
+	<meta name="keywords" content="new year, count, down, new year count down" />
+	<meta name="author" content="Chan Myae Maung" />
+	<title>New Year Count Down</title>
+	<link rel="stylesheet" href="https://mmwebfonts.comquas.com/fonts/?font=notosanzawgyi" />
+	<link rel="icon" href="https://converter.chanmyaemaung.net/favicon/favicon.ico" />
+	<link rel="manifest" href="https://converter.chanmyaemaung.net/favicon/manifest.json" />
+	<style>
+		@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap');
+
+		* {
+			box-sizing: border-box;
+		}
+
+		body {
+			background-image: url('./bg.jpg');
+			background-repeat: no-repeat;
+			background-size: cover;
+			background-position: center center;
+			height: 100vh;
+			overflow: hidden;
+			color: #fff;
+			font-family: 'Poppins', sans-serif;
+
+			/* Start Layout */
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+			text-align-last: center;
+
+			/* Text Disable */
+			-webkit-user-select: none;
+			-moz-user-select: none;
+			-ms-user-select: none;
+			user-select: none;
+		}
+
+		/* Ghost: Dark Overlay */
+		body::after {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background-color: rgba(0, 0, 0, 0.5);
+		}
+
+		body * {
+			z-index: 1;
+		}
+
+		h1 {
+			font-size: 60px;
+			margin: -80px 0 40px;
+			text-align: center;
+		}
+
+		.year {
+			font-size: 200px;
+			z-index: -1;
+			opacity: 0.8;
+			position: absolute;
+			bottom: 0;
+			left: 50%;
+			transform: translateX(-50%);
+		}
+
+		.countDown {
+			/* display: flex; */
+			display: none;
+			transform: scale(2);
+		}
+
+		.time {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			margin: 15px;
+		}
+
+		.time h2 {
+			margin: 0 0 5px;
+		}
+
+		@media (max-width: 500px) {
+			h1 {
+				font-size: 30px;
+			}
+
+			.time {
+				margin: 5px;
+			}
+
+			.time h2 {
+				font-size: 12px;
+				margin: 0;
+			}
+
+			.time small {
+				font-size: 10px;
+			}
+		}
+	</style>
+</head>
+
+<body>
+	<!-- New Year -->
+	<div id="year" class="year"></div>
+	<!-- Title -->
+	<h1>New Year Count Down</h1>
+	<!-- Count Down Wrapper -->
+	<div id="countDown" class="countDown">
+		<!-- Days -->
+		<div class="time">
+			<h2 id="days">00</h2>
+			<small>days</small>
+		</div>
+		<!-- Hours -->
+		<div class="time">
+			<h2 id="hours">00</h2>
+			<small>hours</small>
+		</div>
+		<!-- Minutes -->
+		<div class="time">
+			<h2 id="minutes">00</h2>
+			<small>minutes</small>
+		</div>
+		<!-- Seconds -->
+		<div class="time">
+			<h2 id="seconds">00</h2>
+			<small>seconds</small>
+		</div>
+	</div>
+
+	<!-- Loading Spinner -->
+	<img src="./spinner.gif" alt="Loading..." id="loading" class="loading" />
+
+	<!-- <script src="./main.js"></script> -->
+	<script>
+		/* DOM ELement Selector */
+		const days = document.getElementById('days');
+		const hours = document.getElementById('hours');
+		const minutes = document.getElementById('minutes');
+		const seconds = document.getElementById('seconds');
+		const countDown = document.getElementById('countDown');
+		const loading = document.getElementById('loading');
+		const year = document.getElementById('year');
+
+		/* Current Year */
+		const currentYear = new Date().getFullYear();
+
+		/* New Year Time */
+		// const newYearTime = new Date(`January 01 ${currentYear + 1} 00:00:00`);
+		const newYearTime = new Date(new Date().getTime() + (1000 * 3));
+
+		/* Dynamic Next Year */
+		year.innerText = currentYear + 1;
+
+		/* Update Count Down Time */
+		function updateCountDown() {
+			const currentTime = new Date();
+
+			const diff = newYearTime - currentTime;
+
+			const d = Math.floor(diff / 1000 / 60 / 60 / 24); // 1000 = seconds, 60 = minutes, 60 = hours, 24 = days
+			const h = Math.floor(diff / 1000 / 60 / 60) % 24;
+			const m = Math.floor(diff / 1000 / 60) % 60;
+			const s = Math.floor(diff / 1000) % 60;
+
+			/* Inject values to HTML */
+			days.innerText = d;
+			hours.innerText = h < 10 ? '0' + h : h;
+			minutes.innerText = m < 10 ? '0' + m : m;
+			seconds.innerText = s < 10 ? '0' + s : s;
+		}
+
+		/* Show Spinner before Count Down */
+		setTimeout(() => {
+			loading.remove();
+			countDown.style.display = 'flex';
+		}, 1000);
+
+		/* Run every seconds */
+		setInterval(() => {
+			updateCountDown();
+		}, 1000);
+	</script>
+</body>
+
+</html>
