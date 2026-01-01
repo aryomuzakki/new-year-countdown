@@ -310,7 +310,7 @@
       // if turning sound ON, try to unlock/play (requires user gesture)
       if (!isMuted) {
         try {
-          await tryPlayAudio();
+          // await tryPlayAudio();
           audioUnlocked = true;
         } catch (e) {
           // still blocked -> revert to muted
