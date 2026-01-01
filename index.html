@@ -21,6 +21,11 @@
     }
 
     body {
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
       background-image: url("./bg.jpg");
       background-repeat: no-repeat;
       background-size: cover;
@@ -59,13 +64,14 @@
     }
 
     h1 {
-      font-size: 60px;
+      font-size: clamp(36px, 7vw, 72px);
       margin: -80px 0 40px;
       text-align: center;
     }
 
     .year {
-      font-size: 200px;
+      font-size: clamp(80px, 32vw, 200px);
+      line-height: 1;
       z-index: 0;
       opacity: 0.25;
       position: absolute;
@@ -73,11 +79,12 @@
       left: 50%;
       transform: translateX(-50%);
       pointer-events: none;
+      margin: 0;
     }
 
     .countDown {
       display: none;
-      transform: scale(2);
+      justify-content: space-evenly;
     }
 
     .time {
@@ -85,11 +92,20 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      margin: 15px;
+      gap: 4px;
+      /* margin: 2.4vw; */
     }
 
     .time h2 {
-      margin: 0 0 5px;
+      font-size: clamp(18px, 4.4vw, 48px);
+      margin: 0;
+      line-height: 1;
+    }
+
+    .time small {
+      font-size: clamp(16px, 4.1vw, 40px);
+      margin: 0;
+      line-height: 1;
     }
 
     /* Fireworks canvas (hidden until countdown hits 0) */
@@ -136,26 +152,26 @@
     }
 
     @media (max-width: 500px) {
-      h1 {
+      /* h1 {
         font-size: 30px;
-      }
+      } */
 
       .time {
         margin: 5px;
       }
 
       .time h2 {
-        font-size: 12px;
+        /* font-size: 12px; */
         margin: 0;
       }
 
-      .time small {
+      /* .time small {
         font-size: 10px;
-      }
+      } */
 
-      .year {
+      /* .year {
         font-size: 120px;
-      }
+      } */
     }
   </style>
 </head>
@@ -171,28 +187,30 @@
   </div>
 
   <!-- New Year -->
-  <div id="year" class="year"></div>
+  <p id="year" class="year"></p>
 
   <!-- Title -->
-  <h1 id="title">New Year Count Down</h1>
+  <div class="wrapper">
+    <h1 id="title">New Year Count Down</h1>
 
-  <!-- Count Down Wrapper -->
-  <div id="countDown" class="countDown">
-    <div class="time">
-      <h2 id="days">00</h2>
-      <small>days</small>
-    </div>
-    <div class="time">
-      <h2 id="hours">00</h2>
-      <small>hours</small>
-    </div>
-    <div class="time">
-      <h2 id="minutes">00</h2>
-      <small>minutes</small>
-    </div>
-    <div class="time">
-      <h2 id="seconds">00</h2>
-      <small>seconds</small>
+    <!-- Count Down Wrapper -->
+    <div id="countDown" class="countDown">
+      <div class="time">
+        <h2 id="days">00</h2>
+        <small>days</small>
+      </div>
+      <div class="time">
+        <h2 id="hours">00</h2>
+        <small>hours</small>
+      </div>
+      <div class="time">
+        <h2 id="minutes">00</h2>
+        <small>minutes</small>
+      </div>
+      <div class="time">
+        <h2 id="seconds">00</h2>
+        <small>seconds</small>
+      </div>
     </div>
   </div>
 
@@ -218,10 +236,10 @@
     const currentYear = new Date().getFullYear();
 
     // ✅ use real new year (uncomment this for production)
-    const newYearTime = new Date(`January 01 ${currentYear + 1} 00:00:00`);
+    // const newYearTime = new Date(`January 01 ${currentYear + 1} 00:00:00`);
 
     // demo: 3 seconds
-    // const newYearTime = new Date(new Date().getTime() + 1000 * 3);
+    const newYearTime = new Date(new Date().getTime() + 1000 * 60 * 60);
 
     year.innerText = currentYear + 1;
 
