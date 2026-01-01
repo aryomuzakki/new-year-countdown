@@ -1,5 +1,14 @@
-`Happy New Year Count Down` - Using with Vanilla Javascript ES6
+# New Year Count Down
+combined effort of:
 
-<p align="center">
-  <img width="100%" height="auto" src="./newYear.png">
-</p>
+countdown: 
+
+- https://github.com/chanmyaemaung/new-year-count-down
+
+fireworks: 
+
+- https://codepen.io/GabeStah/pen/BZxJmy
+
+fireworks audio: 
+
+- https://github.com/inter1oper/Happy-New-Year-Countdown

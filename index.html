@@ -1,3 +1,5 @@
+<!-- from https://github.com/aryomuzakki/new-year-countdown -->
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -151,6 +153,34 @@
       text-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
     }
 
+    #audioToggle {
+      position: fixed;
+      right: 16px;
+      top: 16px;
+      z-index: 4;
+      border: 1px solid rgba(255, 255, 255, .25);
+      background: rgba(0, 0, 0, .25);
+      color: #ffffffbf;
+      padding: 10px 12px;
+      border-radius: 999px;
+      font-family: inherit;
+      font-size: 14px;
+      cursor: pointer;
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      display: inline-flex;
+      pointer-events: auto;
+      transition: transform .25s;
+    }
+
+    #audioToggle:active {
+      transform: scale(.98);
+    }
+
+    #audioToggle[aria-pressed="true"] {
+      background: rgba(0, 0, 0, .65);
+    }
+
     @media (max-width: 500px) {
       /* h1 {
         font-size: 30px;
@@ -217,6 +247,12 @@
   <!-- Loading Spinner -->
   <img src="./spinner.gif" alt="Loading..." id="loading" class="loading" />
 
+  <button id="audioToggle" type="button" aria-pressed="false" title="Tap to enable or mute sound">
+    🔇 Enable Sound
+  </button>
+
+  <audio id="fireworkAudio" src="./fireworks.mp3" preload="auto" loop muted></audio>
+
   <script>
     /* =========================
        COUNTDOWN
@@ -236,12 +272,55 @@
     const currentYear = new Date().getFullYear();
 
     // ✅ use real new year (uncomment this for production)
-    // const newYearTime = new Date(`January 01 ${currentYear + 1} 00:00:00`);
+    const newYearTime = new Date(`January 01 ${currentYear + 1} 00:00:00`);
 
-    // demo: 3 seconds
-    const newYearTime = new Date(new Date().getTime() + 1000 * 60 * 60);
+    // for demo
+    // const newYearTime = new Date(new Date().getTime() + 1000 * 3);
 
     year.innerText = currentYear + 1;
+
+    const audio = document.getElementById("fireworkAudio");
+    const audioToggle = document.getElementById("audioToggle");
+
+    let audioUnlocked = false;
+    let isMuted = true;
+
+    function setAudioUI() {
+      const soundOn = audioUnlocked && !isMuted;
+      audioToggle.setAttribute("aria-pressed", soundOn ? "true" : "false");
+      audioToggle.textContent = soundOn ? "🔊 Sound enabled" : "🔇 Enable sound";
+      audioToggle.title = soundOn ? "Mute sound" : "Tap to enable or mute sound";
+      audioToggle.style.color = soundOn ? "#ffffffe6" : "#ffffffbf";
+    }
+
+    function tryPlayAudio() {
+      if (!audio) return Promise.reject();
+      audio.volume = 0.7;
+      audio.muted = isMuted;
+      return audio.play();
+    }
+
+    setAudioUI();
+
+    audioToggle.addEventListener("click", async () => {
+      // toggle mute
+      isMuted = !isMuted;
+      if (audio) audio.muted = isMuted;
+
+      // if turning sound ON, try to unlock/play (requires user gesture)
+      if (!isMuted) {
+        try {
+          await tryPlayAudio();
+          audioUnlocked = true;
+        } catch (e) {
+          // still blocked -> revert to muted
+          audioUnlocked = false;
+          isMuted = true;
+          if (audio) audio.muted = true;
+        }
+      }
+      setAudioUI();
+    });
 
     let countdownDone = false;
     let intervalId = null;
@@ -286,6 +365,24 @@
       // show fireworks + message
       canvas.style.display = "block";
       celebrate.style.display = "flex";
+
+      // 🔊 START AUDIO (loop)
+      if (audio) {
+        audio.currentTime = 0;
+        audio.volume = 0.7;
+
+        // If user already enabled sound earlier, play with sound.
+        // Otherwise, start muted (silent) and wait for button click to unmute.
+        audio.muted = isMuted;
+
+        tryPlayAudio().then(() => {
+          if (!isMuted) audioUnlocked = true; // user already clicked before finish
+          setAudioUI();
+        }).catch(() => {
+          // ignore; user can unlock by pressing the button
+          setAudioUI();
+        });
+      }
 
       // start fireworks loop
       startFireworks();
